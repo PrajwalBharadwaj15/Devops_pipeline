@@ -1,22 +1,29 @@
-body {
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
     font-family: Arial, sans-serif;
+  }
 }
 
-.navbar-brand {
-    font-weight: bold;
+@layer components {
+  .navbar-brand {
+    @apply font-bold;
+  }
+
+  .card {
+    @apply mb-5;
+  }
+
+  .card-img-top {
+    @apply h-48 object-cover;
+  }
 }
 
-.card {
-    margin-bottom: 20px;
-}
-
-.card-img-top {
-    height: 200px;
-    object-fit: cover;
-}
-
-footer {
-    position: absolute;
-    width: 100%;
-    bottom: 0;
+@layer utilities {
+  .footer-fixed {
+    @apply fixed bottom-0 left-0 right-0;
+  }
 }
