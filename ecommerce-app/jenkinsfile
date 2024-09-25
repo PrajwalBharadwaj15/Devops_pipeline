@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_CREDENTIALS = credentials('docker-hub-credentials')
+        AWS_CREDENTIALS = credentials('aws-credentials')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/your-username/ecommerce-app.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    docker.build("your-dockerhub-username/ecommerce-app:${env.BUILD_ID}").inside {
+                        sh 'docker push your-dockerhub-username/ecommerce-app:${env.BUILD_ID}'
+                    }
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    withCredentials([string(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+                        sh 'kubectl set image deployment/ecommerce-app ecommerce-app=your-dockerhub-username/ecommerce-app:${env.BUILD_ID}'
+                    }
+                }
+            }
+        }
+    }
+}
